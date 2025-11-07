@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensory Stim Space</title>
+    <style>
+        :root {
+            --color-bg-primary: #1a1a2e;
+            --color-bg-secondary: #16213e;
+            --color-accent-1: #0f4c75;
+            --color-accent-2: #3282b8;
+            --color-accent-3: #bbe1fa;
+            --color-text: #ffffff;
+            --color-text-soft: #bbe1fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--color-bg-primary);
+            color: var(--color-text);
+            overflow-x: hidden;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--color-accent-1), var(--color-accent-2));
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: var(--color-text-soft);
+            font-size: 1.1em;
+        }
+
+        .sensory-info {
+            background: var(--color-bg-secondary);
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid var(--color-accent-2);
+        }
+
+        .sensory-info p {
+            margin: 5px 0;
+            color: var(--color-text-soft);
+            font-size: 0.95em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            background: var(--color-bg-secondary);
+            padding: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: var(--color-accent-1);
+            border: none;
+            border-radius: 25px;
+            color: var(--color-text);
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: var(--color-accent-2);
+            transform: scale(1.05);
+        }
+
+        .nav-tab.active {
+            background: var(--color-accent-2);
+            box-shadow: 0 0 20px rgba(50, 130, 184, 0.6);
+        }
+
+        .content {
+            display: none;
+            padding: 30px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        /* Visual Stim Styles */
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stim-card {
+            background: var(--color-bg-secondary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .stim-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stim-card h3 {
+            margin-bottom: 15px;
+            color: var(--color-accent-3);
+        }
+
+        #bubbleCanvas, #particleCanvas, #waveCanvas, #rainbowCanvas {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        /* Interactive Drawing */
+        #drawCanvas {
+            width: 100%;
+            height: 500px;
+            border-radius: 15px;
+            background: white;
+            cursor: crosshair;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            background: var(--color-accent-2);
+            border: none;
+            border-radius: 10px;
+            color: var(--color-text);
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--color-accent-1);
+            transform: scale(1.05);
+        }
+
+        .control-btn:focus {
+            outline: 3px solid var(--color-accent-3);
+            outline-offset: 3px;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Sound Pad */
+        .sound-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .sound-pad {
+            aspect-ratio: 1;
+            border-radius: 15px;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .sound-pad:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 30px rgba(255,255,255,0.5);
+        }
+
+        .sound-pad:focus {
+            outline: 3px solid white;
+            outline-offset: 4px;
+        }
+
+        /* Color Palette */
+        .color-picker {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        /* Breathing Exercise */
+        .breathing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-accent-2), var(--color-accent-3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            margin: 30px 0;
+            transition: all 4s ease-in-out;
+            box-shadow: 0 0 40px rgba(50, 130, 184, 0.5);
+        }
+
+        .breathing-circle.expand {
+            width: 300px;
+            height: 300px;
+        }
+
+        .breathing-circle:hover {
+            cursor: pointer;
+            box-shadow: 0 0 50px rgba(50, 130, 184, 0.7);
+        }
+
+        .instruction-text {
+            font-size: 1.5em;
+            color: var(--color-accent-3);
+            margin: 20px 0;
+        }
+
+        /* Fidget Spinner */
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .spinner-blade {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--color-accent-2);
+            box-shadow: 0 0 20px rgba(50, 130, 184, 0.6);
+        }
+
+        .spinner-center {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-accent-3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .nav-tab {
+                padding: 10px 16px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌈 Sensory Stim Space 🌈</h1>
+        <p>A safe, calming space for sensory exploration</p>
+        <div class="sensory-info">
+            <p>✨ High contrast visuals • 🎨 Customizable colors • 🔊 Optional sounds</p>
+            <p>📱 Touch-friendly • ⌨️ Keyboard accessible • 🌙 Calming animations</p>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('visual')">✨ Visual</button>
+        <button class="nav-tab" onclick="showTab('draw')">🎨 Draw</button>
+        <button class="nav-tab" onclick="showTab('sounds')">🎵 Sounds</button>
+        <button class="nav-tab" onclick="showTab('breathe')">🫁 Breathe</button>
+        <button class="nav-tab" onclick="showTab('fidget')">🌀 Fidget</button>
+    </div>
+
+    <!-- Visual Stims -->
+    <div id="visual" class="content active">
+        <div class="visual-grid">
+            <div class="stim-card">
+                <h3>Floating Bubbles</h3>
+                <p>Gentle movement • Soft colors • Calming</p>
+                <canvas id="bubbleCanvas"></canvas>
+            </div>
+            <div class="stim-card">
+                <h3>Particle Flow</h3>
+                <p>Predictable patterns • Visual tracking • Focus</p>
+                <canvas id="particleCanvas"></canvas>
+            </div>
+            <div class="stim-card">
+                <h3>Wave Motion</h3>
+                <p>Rhythmic flow • Smooth motion • Soothing</p>
+                <canvas id="waveCanvas"></canvas>
+            </div>
+            <div class="stim-card">
+                <h3>Rainbow Spiral</h3>
+                <p>Colorful patterns • Circular motion • Engaging</p>
+                <canvas id="rainbowCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawing -->
+    <div id="draw" class="content">
+        <h2 style="text-align: center; margin-bottom: 10px; color: var(--color-accent-3);">Creative Drawing Space</h2>
+        <p style="text-align: center; margin-bottom: 20px; color: var(--color-text-soft); font-size: 0.95em;">Free expression • No mistakes • Tactile feedback • Visual stimulation</p>
+        <div class="controls">
+            <input type="color" id="colorPicker" class="color-picker" value="#3282b8">
+            <button class="control-btn" onclick="changeSize(2)">✏️ Thin</button>
+            <button class="control-btn" onclick="changeSize(10)">🖊️ Medium</button>
+            <button class="control-btn" onclick="changeSize(20)">🖌️ Thick</button>
+            <button class="control-btn" onclick="clearCanvas()">🗑️ Clear</button>
+            <button class="control-btn" onclick="toggleRainbow()">🌈 Rainbow</button>
+            <button class="control-btn" onclick="saveDrawing()">💾 Save</button>
+        </div>
+        <canvas id="drawCanvas"></canvas>
+    </div>
+
+    <!-- Sounds -->
+    <div id="sounds" class="content">
+        <h2 style="text-align: center; margin-bottom: 20px; color: var(--color-accent-3);">Tap to play sounds</h2>
+        <p style="text-align: center; margin-bottom: 30px; color: var(--color-text-soft); font-size: 0.95em;">Each color makes a different musical tone • Safe volume levels • Cause-and-effect learning</p>
+        <div class="sound-grid">
+            <button class="sound-pad" style="background: #FF6B6B;" onclick="playTone(261.63, 0.3)">🔴</button>
+            <button class="sound-pad" style="background: #4ECDC4;" onclick="playTone(293.66, 0.3)">🟢</button>
+            <button class="sound-pad" style="background: #45B7D1;" onclick="playTone(329.63, 0.3)">🔵</button>
+            <button class="sound-pad" style="background: #FFA07A;" onclick="playTone(349.23, 0.3)">🟠</button>
+            <button class="sound-pad" style="background: #98D8C8;" onclick="playTone(392.00, 0.3)">🟡</button>
+            <button class="sound-pad" style="background: #F7B801;" onclick="playTone(440.00, 0.3)">⭐</button>
+            <button class="sound-pad" style="background: #C06C84;" onclick="playTone(493.88, 0.3)">🟣</button>
+            <button class="sound-pad" style="background: #6C5B7B;" onclick="playTone(523.25, 0.3)">🟤</button>
+        </div>
+    </div>
+
+    <!-- Breathing -->
+    <div id="breathe" class="content">
+        <div class="breathing-container">
+            <h2 style="color: var(--color-accent-3);">Calming Breathing Exercise</h2>
+            <p style="text-align: center; margin: 15px 0; color: var(--color-text-soft); font-size: 0.95em;">Helps with anxiety • Self-regulation • Emotional control • 4-second breathing cycle</p>
+            <p class="instruction-text" id="breatheText">Click circle to start</p>
+            <div class="breathing-circle" id="breathingCircle" onclick="startBreathing()">
+                <span>🌸</span>
+            </div>
+            <button class="control-btn" onclick="stopBreathing()">Stop</button>
+        </div>
+    </div>
+
+    <!-- Fidget Spinner -->
+    <div id="fidget" class="content">
+        <div class="spinner-container">
+            <h2 style="color: var(--color-accent-3); margin-bottom: 20px;">Virtual Fidget Spinner</h2>
+            <p style="color: var(--color-text-soft); margin-bottom: 10px;">Click to spin!</p>
+            <p style="color: var(--color-text-soft); margin-bottom: 20px; font-size: 0.9em;">Repetitive motion • Predictable behavior • Focus aid • Stress relief</p>
+            <div class="spinner" id="spinner" onclick="spinFidget()">
+                <div class="spinner-blade" id="blade1"></div>
+                <div class="spinner-blade" id="blade2"></div>
+                <div class="spinner-blade" id="blade3"></div>
+                <div class="spinner-center"></div>
+            </div>
+            <p id="spinSpeed" style="margin-top: 30px; font-size: 1.2em; color: var(--color-accent-3);">Speed: 0 RPM</p>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.content');
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            contents.forEach(content => content.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Visual Stims - Bubbles
+        const bubbleCanvas = document.getElementById('bubbleCanvas');
+        const bubbleCtx = bubbleCanvas.getContext('2d');
+        bubbleCanvas.width = bubbleCanvas.offsetWidth;
+        bubbleCanvas.height = 400;
+
+        const bubbles = [];
+        for (let i = 0; i < 20; i++) {
+            bubbles.push({
+                x: Math.random() * bubbleCanvas.width,
+                y: Math.random() * bubbleCanvas.height,
+                radius: Math.random() * 30 + 10,
+                dx: (Math.random() - 0.5) * 2,
+                dy: (Math.random() - 0.5) * 2,
+                color: `hsl(${Math.random() * 360}, 70%, 60%)`
+            });
+        }
+
+        function animateBubbles() {
+            bubbleCtx.fillStyle = 'rgba(102, 126, 234, 0.1)';
+            bubbleCtx.fillRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
+            
+            bubbles.forEach(bubble => {
+                bubbleCtx.beginPath();
+                bubbleCtx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+                bubbleCtx.fillStyle = bubble.color;
+                bubbleCtx.fill();
+                
+                bubble.x += bubble.dx;
+                bubble.y += bubble.dy;
+                
+                if (bubble.x < 0 || bubble.x > bubbleCanvas.width) bubble.dx *= -1;
+                if (bubble.y < 0 || bubble.y > bubbleCanvas.height) bubble.dy *= -1;
+            });
+            
+            requestAnimationFrame(animateBubbles);
+        }
+        animateBubbles();
+
+        // Particles
+        const particleCanvas = document.getElementById('particleCanvas');
+        const particleCtx = particleCanvas.getContext('2d');
+        particleCanvas.width = particleCanvas.offsetWidth;
+        particleCanvas.height = 400;
+
+        const particles = [];
+        for (let i = 0; i < 50; i++) {
+            particles.push({
+                x: Math.random() * particleCanvas.width,
+                y: Math.random() * particleCanvas.height,
+                size: Math.random() * 3 + 1,
+                speedX: Math.random() * 3 - 1.5,
+                speedY: Math.random() * 3 - 1.5,
+                color: `hsl(${Math.random() * 360}, 70%, 60%)`
+            });
+        }
+
+        function animateParticles() {
+            particleCtx.fillStyle = 'rgba(118, 75, 162, 0.1)';
+            particleCtx.fillRect(0, 0, particleCanvas.width, particleCanvas.height);
+            
+            particles.forEach(p => {
+                particleCtx.beginPath();
+                particleCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                particleCtx.fillStyle = p.color;
+                particleCtx.fill();
+                
+                p.x += p.speedX;
+                p.y += p.speedY;
+                
+                if (p.x < 0 || p.x > particleCanvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > particleCanvas.height) p.speedY *= -1;
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Waves
+        const waveCanvas = document.getElementById('waveCanvas');
+        const waveCtx = waveCanvas.getContext('2d');
+        waveCanvas.width = waveCanvas.offsetWidth;
+        waveCanvas.height = 400;
+        let waveOffset = 0;
+
+        function animateWaves() {
+            waveCtx.fillStyle = '#1a1a2e';
+            waveCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+            
+            for (let i = 0; i < 3; i++) {
+                waveCtx.beginPath();
+                waveCtx.moveTo(0, waveCanvas.height / 2);
+                
+                for (let x = 0; x < waveCanvas.width; x++) {
+                    const y = Math.sin((x + waveOffset + i * 100) * 0.01) * 50 + waveCanvas.height / 2;
+                    waveCtx.lineTo(x, y);
+                }
+                
+                waveCtx.strokeStyle = `hsl(${180 + i * 30}, 70%, 60%)`;
+                waveCtx.lineWidth = 3;
+                waveCtx.stroke();
+            }
+            
+            waveOffset += 2;
+            requestAnimationFrame(animateWaves);
+        }
+        animateWaves();
+
+        // Rainbow Spiral
+        const rainbowCanvas = document.getElementById('rainbowCanvas');
+        const rainbowCtx = rainbowCanvas.getContext('2d');
+        rainbowCanvas.width = rainbowCanvas.offsetWidth;
+        rainbowCanvas.height = 400;
+        let spiralAngle = 0;
+
+        function animateSpiral() {
+            rainbowCtx.fillStyle = 'rgba(26, 26, 46, 0.1)';
+            rainbowCtx.fillRect(0, 0, rainbowCanvas.width, rainbowCanvas.height);
+            
+            const centerX = rainbowCanvas.width / 2;
+            const centerY = rainbowCanvas.height / 2;
+            
+            for (let i = 0; i < 360; i += 10) {
+                const angle = (i + spiralAngle) * Math.PI / 180;
+                const radius = i * 0.3;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                rainbowCtx.beginPath();
+                rainbowCtx.arc(x, y, 5, 0, Math.PI * 2);
+                rainbowCtx.fillStyle = `hsl(${i}, 70%, 60%)`;
+                rainbowCtx.fill();
+            }
+            
+            spiralAngle += 1;
+            requestAnimationFrame(animateSpiral);
+        }
+        animateSpiral();
+
+        // Drawing Canvas
+        const drawCanvas = document.getElementById('drawCanvas');
+        const drawCtx = drawCanvas.getContext('2d');
+        drawCanvas.width = drawCanvas.offsetWidth;
+        drawCanvas.height = 500;
+        
+        let isDrawing = false;
+        let currentColor = '#3282b8';
+        let lineWidth = 10;
+        let rainbowMode = false;
+        let hue = 0;
+
+        document.getElementById('colorPicker').addEventListener('change', (e) => {
+            currentColor = e.target.value;
+            rainbowMode = false;
+        });
+
+        drawCanvas.addEventListener('mousedown', startDrawing);
+        drawCanvas.addEventListener('mousemove', draw);
+        drawCanvas.addEventListener('mouseup', stopDrawing);
+        drawCanvas.addEventListener('mouseout', stopDrawing);
+        
+        drawCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = drawCanvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            drawCtx.beginPath();
+            drawCtx.moveTo(x, y);
+            isDrawing = true;
+        });
+        
+        drawCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const touch = e.touches[0];
+            const rect = drawCanvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            if (rainbowMode) {
+                drawCtx.strokeStyle = `hsl(${hue}, 70%, 60%)`;
+                hue = (hue + 2) % 360;
+            } else {
+                drawCtx.strokeStyle = currentColor;
+            }
+            
+            drawCtx.lineWidth = lineWidth;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineTo(x, y);
+            drawCtx.stroke();
+            drawCtx.beginPath();
+            drawCtx.moveTo(x, y);
+        });
+        
+        drawCanvas.addEventListener('touchend', () => {
+            isDrawing = false;
+        });
+
+        function startDrawing(e) {
+            isDrawing = true;
+            drawCtx.beginPath();
+            drawCtx.moveTo(e.offsetX, e.offsetY);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            if (rainbowMode) {
+                drawCtx.strokeStyle = `hsl(${hue}, 70%, 60%)`;
+                hue = (hue + 2) % 360;
+            } else {
+                drawCtx.strokeStyle = currentColor;
+            }
+            
+            drawCtx.lineWidth = lineWidth;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineTo(e.offsetX, e.offsetY);
+            drawCtx.stroke();
+            drawCtx.beginPath();
+            drawCtx.moveTo(e.offsetX, e.offsetY);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function changeSize(size) {
+            lineWidth = size;
+        }
+
+        function clearCanvas() {
+            drawCtx.fillStyle = 'white';
+            drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+        }
+
+        function toggleRainbow() {
+            rainbowMode = !rainbowMode;
+            hue = 0;
+        }
+
+        function saveDrawing() {
+            const link = document.createElement('a');
+            link.download = 'my-drawing.png';
+            link.href = drawCanvas.toDataURL();
+            link.click();
+        }
+
+        // Sound Generation
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTone(frequency, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        // Breathing Exercise
+        let breathingInterval;
+        let isBreathing = false;
+
+        function startBreathing() {
+            if (isBreathing) return;
+            isBreathing = true;
+            
+            const circle = document.getElementById('breathingCircle');
+            const text = document.getElementById('breatheText');
+            let phase = 0;
+            
+            breathingInterval = setInterval(() => {
+                if (phase === 0) {
+                    text.textContent = 'Breathe In...';
+                    circle.classList.add('expand');
+                    phase = 1;
+                } else if (phase === 1) {
+                    text.textContent = 'Hold...';
+                    phase = 2;
+                } else if (phase === 2) {
+                    text.textContent = 'Breathe Out...';
+                    circle.classList.remove('expand');
+                    phase = 3;
+                } else {
+                    text.textContent = 'Hold...';
+                    phase = 0;
+                }
+            }, 4000);
+        }
+
+        function stopBreathing() {
+            clearInterval(breathingInterval);
+            isBreathing = false;
+            document.getElementById('breatheText').textContent = 'Click circle to start';
+            document.getElementById('breathingCircle').classList.remove('expand');
+        }
+
+        // Fidget Spinner
+        let spinSpeed = 0;
+        let spinAnimation;
+
+        function spinFidget() {
+            spinSpeed = 3000 + Math.random() * 2000;
+            
+            if (spinAnimation) {
+                clearInterval(spinAnimation);
+            }
+            
+            const blades = [
+                document.getElementById('blade1'),
+                document.getElementById('blade2'),
+                document.getElementById('blade3')
+            ];
+            
+            let angle = 0;
+            const spinner = document.getElementById('spinner');
+            
+            spinAnimation = setInterval(() => {
+                angle += spinSpeed / 100;
+                spinner.style.transform = `rotate(${angle}deg)`;
+                
+                spinSpeed *= 0.98;
+                document.getElementById('spinSpeed').textContent = `Speed: ${Math.round(spinSpeed)} RPM`;
+                
+                if (spinSpeed < 10) {
+                    clearInterval(spinAnimation);
+                    spinSpeed = 0;
+                }
+            }, 16);
+            
+            positionBlades();
+        }
+
+        function positionBlades() {
+            const blades = [
+                document.getElementById('blade1'),
+                document.getElementById('blade2'),
+                document.getElementById('blade3')
+            ];
+            
+            blades.forEach((blade, index) => {
+                const angle = (index * 120) * Math.PI / 180;
+                const x = 70 + Math.cos(angle) * 60;
+                const y = 70 + Math.sin(angle) * 60;
+                blade.style.left = `${x}px`;
+                blade.style.top = `${y}px`;
+            });
+        }
+
+        positionBlades();
+
+        // Responsive canvas sizing
+        window.addEventListener('resize', () => {
+            const canvases = [
+                {canvas: bubbleCanvas, ctx: bubbleCtx},
+                {canvas: particleCanvas, ctx: particleCtx},
+                {canvas: waveCanvas, ctx: waveCtx},
+                {canvas: rainbowCanvas, ctx: rainbowCtx}
+            ];
+            
+            canvases.forEach(({canvas}) => {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = 400;
+            });
+            
+            drawCanvas.width = drawCanvas.offsetWidth;
+            drawCanvas.height = 500;
+        });
+    </script>
+</body>
+</html>
