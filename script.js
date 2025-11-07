@@ -3,8 +3,6 @@
 // Background color changer
 function changeBackground(color) {
     document.body.style.backgroundColor = color;
-    // Add a gentle transition
-    document.body.style.transition = 'background-color 0.5s ease';
 }
 
 // Drawing Canvas Setup
@@ -204,9 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
         createBubbles();
     }
     
-    // Add smooth transitions to body
-    document.body.style.transition = 'background-color 0.5s ease';
-    
     // Add keyboard accessibility for buttons
     const buttons = document.querySelectorAll('.button');
     buttons.forEach(button => {
@@ -218,16 +213,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Announce page load for screen readers
-    console.log('Sensory Hub loaded successfully! 🌈');
-});
-
-// Add gentle hover effects to cards
-document.addEventListener('DOMContentLoaded', function() {
+    // Add gentle hover effects to cards
     const cards = document.querySelectorAll('.feature-card, .tool-card, .tip-card');
     cards.forEach(card => {
         card.style.transition = 'all 0.3s ease';
     });
+    
+    // Announce page load for screen readers
+    console.log('Sensory Hub loaded successfully! 🌈');
 });
 
 // Accessibility: Escape key to reset background
