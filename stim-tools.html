@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive stim tools to help you relax and focus">
+    <title>Stim Tools - Sensory Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>🌈 Sensory Hub</h1>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about-stimming.html">About Stimming</a></li>
+                <li><a href="stim-tools.html" class="active">Stim Tools</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Interactive Stim Tools 🎨</h2>
+            <p class="large-text">Try these calm, friendly tools to help you relax, focus, or express yourself.</p>
+        </section>
+
+        <section class="tools-grid">
+            <!-- Breathing Tool -->
+            <div class="tool-card">
+                <div class="icon">🫁</div>
+                <h3>Breathing Circle</h3>
+                <p>Watch the circle grow and shrink. Breathe in as it grows, breathe out as it shrinks.</p>
+                <div class="tool-interactive">
+                    <div id="breathing-ball"></div>
+                </div>
+                <p class="small-text">This helps you calm down and focus on your breathing.</p>
+            </div>
+
+            <!-- Color Picker -->
+            <div class="tool-card">
+                <div class="icon">🎨</div>
+                <h3>Calm Colors</h3>
+                <p>Click on colors to change the background. Find colors that make you feel good!</p>
+                <div class="tool-interactive">
+                    <div class="color-palette">
+                        <div class="color-box" style="background-color: #A8D5BA;" onclick="changeBackground('#A8D5BA')" title="Soft Green"></div>
+                        <div class="color-box" style="background-color: #6B9BD1;" onclick="changeBackground('#6B9BD1')" title="Calm Blue"></div>
+                        <div class="color-box" style="background-color: #F4C2C2;" onclick="changeBackground('#F4C2C2')" title="Light Pink"></div>
+                        <div class="color-box" style="background-color: #FFE5B4;" onclick="changeBackground('#FFE5B4')" title="Soft Peach"></div>
+                        <div class="color-box" style="background-color: #E6E6FA;" onclick="changeBackground('#E6E6FA')" title="Lavender"></div>
+                        <div class="color-box" style="background-color: #F5F7FA;" onclick="changeBackground('#F5F7FA')" title="Reset"></div>
+                    </div>
+                </div>
+                <p class="small-text">Try different colors to see how they make you feel.</p>
+            </div>
+
+            <!-- Drawing Canvas -->
+            <div class="tool-card">
+                <div class="icon">✏️</div>
+                <h3>Free Draw</h3>
+                <p>Draw, doodle, or make patterns. Express yourself however you want!</p>
+                <div class="tool-interactive">
+                    <canvas id="drawing-canvas" width="280" height="200"></canvas>
+                </div>
+                <div class="canvas-controls">
+                    <button class="button" onclick="clearCanvas()">Clear</button>
+                    <button class="button" onclick="changeDrawColor('#6B9BD1')">Blue</button>
+                    <button class="button" onclick="changeDrawColor('#A8D5BA')">Green</button>
+                    <button class="button" onclick="changeDrawColor('#F4C2C2')">Pink</button>
+                    <button class="button" onclick="changeDrawColor('#000000')">Black</button>
+                </div>
+                <p class="small-text">Drawing can help you express feelings and relax.</p>
+            </div>
+
+            <!-- Click Counter -->
+            <div class="tool-card">
+                <div class="icon">🔢</div>
+                <h3>Click Counter</h3>
+                <p>Click the button and watch the number grow. Great for focusing!</p>
+                <div class="tool-interactive">
+                    <div class="counter-display" id="counter">0</div>
+                </div>
+                <div class="counter-controls">
+                    <button class="button" onclick="incrementCounter()">Click Me!</button>
+                    <button class="button" onclick="resetCounter()">Reset</button>
+                </div>
+                <p class="small-text">Counting and clicking can be very calming.</p>
+            </div>
+
+            <!-- Sound Buttons -->
+            <div class="tool-card">
+                <div class="icon">🎵</div>
+                <h3>Calm Sounds</h3>
+                <p>Click to hear peaceful sounds. (Sound buttons ready for you to explore!)</p>
+                <div class="tool-interactive">
+                    <div class="counter-controls">
+                        <button class="button" onclick="playSound('rain')">🌧️ Rain</button>
+                        <button class="button" onclick="playSound('bell')">🔔 Bell</button>
+                        <button class="button" onclick="playSound('wave')">🌊 Waves</button>
+                    </div>
+                </div>
+                <p class="small-text">Sounds can help you focus or feel calm.</p>
+            </div>
+
+            <!-- Bubble Wrap -->
+            <div class="tool-card">
+                <div class="icon">⚪</div>
+                <h3>Virtual Bubbles</h3>
+                <p>Click on bubbles to "pop" them. Very satisfying!</p>
+                <div class="tool-interactive">
+                    <div id="bubble-container" class="color-palette"></div>
+                </div>
+                <button class="button" onclick="createBubbles()">New Bubbles</button>
+                <p class="small-text">Popping bubbles is a fun way to stim!</p>
+            </div>
+        </section>
+
+        <section class="tips-section">
+            <h2>Tips for Using Stim Tools 🌟</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4>Try Different Tools</h4>
+                    <p>Different tools work better at different times. Explore them all!</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Use What Feels Right</h4>
+                    <p>If a tool doesn't help you, that's okay! Everyone is different.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Take Your Time</h4>
+                    <p>There's no rush. Spend as much time as you need with each tool.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>Come Back Anytime</h4>
+                    <p>These tools are always here when you need them!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>💙 Made with care for sensory-friendly learning 💙</p>
+        <p class="small-text">Remember: You are wonderful just the way you are!</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
